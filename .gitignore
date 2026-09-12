@@ -1,0 +1,7 @@
+/.build/
+/.opencode/
+/.vscode/
+/.worktrees/
+/opencode.local.json
+/docs/superpowers/
+/compiler
