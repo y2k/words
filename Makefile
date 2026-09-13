@@ -13,6 +13,20 @@ build:
 	@ mkdir -p .build/bin/app/src/main/java/y2k/language
 	@ cp $$LY2K_PACKAGES_DIR/prelude/1.0.0/java/language_runtime.java .build/bin/app/src/main/java/y2k/language
 	@ cat resources/manifest.clj | ly2k --target eval > .build/bin/app/src/main/AndroidManifest.xml
+	@ mkdir -p .build/bin/app/src/main/res
+	@ cp -R resources/res/. .build/bin/app/src/main/res/
+
+.PHONY: test
+test:
+	@ { cat src/words/effect.clj src/words/app.clj test/words/main_test.clj; printf '\n(words.main-test/test)\n'; } | ly2k --target eval
+
+.PHONY: check-ui
+check-ui: build
+	@ mkdir -p .build/check-ui
+	@ ly2k --target java < checks/disabled_history.clj > .build/check-ui/disabled_history.java
+	@ javac -d .build/check-ui .build/bin/app/src/main/java/y2k/language/language_runtime.java .build/check-ui/disabled_history.java
+	@ java -cp .build/check-ui 'checks.disabled_history$$Runner'
+	@ printf '%s\n' 'PASS: old answers disabled, old taps ignored, new question active'
 
 .PHONY: run
 run: build_apk

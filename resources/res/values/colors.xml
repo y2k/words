@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="words_background">#F7F3EC</color>
+    <color name="words_surface">#142024</color>
+    <color name="words_text">#EDF3F5</color>
+    <color name="words_text_muted">#9BAEB5</color>
+    <color name="words_border">#374750</color>
+</resources>

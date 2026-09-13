@@ -4,10 +4,33 @@
            [android.widget LinearLayout Button TextView]
            [com.google.android.flexbox FlexboxLayout]))
 
-(defn- create-button [w {:text title :onclick onclick}]
+(defn dp [^Context context ^int value]
+  (cast int (android.util.TypedValue/applyDimension
+             1 value (.getDisplayMetrics (.getResources context)))))
+
+(defn disable-children! [^ViewGroup parent ^int index]
+  (if (< index (.getChildCount parent))
+    (let [child (.getChildAt parent index)]
+      (.setEnabled child false)
+      (if (instance? ViewGroup child)
+        (disable-children! child 0))
+      (disable-children! parent (+ index 1)))))
+
+(defn- create-button [w {:text title :onclick onclick :compact compact :description description}]
   (let [context (cast Context (get w :context))
-        btn (Button. context)]
+        btn (Button. context)
+        gap (cast int (dp context 8))
+        params (FlexboxLayout.LayoutParams. -2 -2)]
+    (.setMargins params 0 0 gap gap)
+    (.setLayoutParams btn params)
     (.setText btn (cast String title))
+    (if description
+      (.setContentDescription btn (cast String description)))
+    (if compact
+      (let [size (cast int (dp context 48))]
+        (.setMinWidth btn size)
+        (.setMinimumWidth btn size)
+        (.setMinimumHeight btn size)))
     (.setOnClickListener btn
                          ^void:View.OnClickListener
                          (fn [_e]
@@ -18,6 +41,7 @@
   (let [text (TextView. context)]
     (.setText text title)
     (.setTextSize text 28)
+    (.setPadding text 0 0 0 (cast int (dp context 8)))
     text))
 
 (defn- add-children [w ^ViewGroup layout children]
@@ -32,6 +56,7 @@
   (let [context (cast Context (get w :context))
         layout (LinearLayout. context)]
     (.setOrientation layout orientation)
+    (.setPadding layout 0 0 0 (cast int (dp context 8)))
     (add-children w layout children)))
 
 (defn- create-row [w children]

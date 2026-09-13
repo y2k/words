@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="WordsTheme" parent="android:style/Theme.Material.NoActionBar">
+        <item name="android:windowBackground">@color/words_surface</item>
+        <item name="android:colorBackground">@color/words_surface</item>
+        <item name="android:statusBarColor">@color/words_surface</item>
+        <item name="android:navigationBarColor">@color/words_surface</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:windowLightNavigationBar">false</item>
+        <item name="android:textColorPrimary">@color/words_text</item>
+        <item name="android:textColorSecondary">@color/words_text_muted</item>
+        <item name="android:fontFamily">sans</item>
+        <item name="android:colorAccent">@color/words_text</item>
+        <item name="android:buttonStyle">@style/WordsButton</item>
+        <item name="android:textViewStyle">@style/WordsText</item>
+    </style>
+
+    <style name="WordsText" parent="android:style/Widget.TextView">
+        <item name="android:textColor">@color/words_text</item>
+    </style>
+
+    <style name="WordsButton" parent="android:style/Widget.Material.Button">
+        <item name="android:background">@drawable/words_button</item>
+        <item name="android:backgroundTint">@null</item>
+        <item name="android:stateListAnimator">@null</item>
+        <item name="android:elevation">0dp</item>
+        <item name="android:textColor">@color/words_button_text</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:fontFamily">sans</item>
+        <item name="android:minWidth">48dp</item>
+        <item name="android:minHeight">48dp</item>
+        <item name="android:paddingLeft">16dp</item>
+        <item name="android:paddingRight">16dp</item>
+        <item name="android:paddingTop">12dp</item>
+        <item name="android:paddingBottom">15dp</item>
+        <item name="android:gravity">center</item>
+    </style>
+</resources>

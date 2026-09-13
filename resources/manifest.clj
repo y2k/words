@@ -4,10 +4,10 @@
 
 (xml/to-string
  [:manifest {:xmlns:android "http://schemas.android.com/apk/res/android"}
-  [:application {:android:icon "@drawable/ic_launcher"
+  [:application {:android:icon "@drawable/words_launcher"
                  :android:label "Words"
-                 :android:roundIcon "@drawable/ic_launcher"
-                 :android:theme "@android:style/Theme.Material.NoActionBar"}
+                 :android:roundIcon "@drawable/words_launcher"
+                 :android:theme "@style/WordsTheme"}
    [:activity {:android:name "words.main$MainActivity"
                :android:configChanges "orientation|screenSize"
                :android:exported "true"}
