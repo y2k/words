@@ -44,6 +44,16 @@
     (.setPadding text 0 0 0 (cast int (dp context 8)))
     text))
 
+(defn- create-divider [{:context ^Context context}]
+  (let [divider (View. context)
+        gap (cast int (dp context 8))
+        params (LinearLayout.LayoutParams. -1 (cast int (dp context 1)))]
+    (.setMargins params 0 gap 0 gap)
+    (.setLayoutParams divider params)
+    (.setBackgroundColor divider (.getCurrentTextColor (TextView. context)))
+    (.setAlpha (.getBackground divider) 48)
+    divider))
+
 (defn- add-children [w ^ViewGroup layout children]
   (reduce (fn [result child]
             (let [f (create child)]
@@ -74,6 +84,7 @@
       (case tag
         :button (create-button w attrs)
         :text (create-text w attrs)
+        :divider (create-divider w)
         :column (create-layout w 1 children)
         :row (create-row w children)
         (sneaky-throw (RuntimeException. (str "unknown view: " tag)))))))
