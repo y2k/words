@@ -18,7 +18,15 @@ build:
 
 .PHONY: test
 test:
-	@ { cat src/words/effect.clj src/words/app.clj test/words/main_test.clj; printf '\n(words.main-test/test)\n'; } | ly2k --target eval
+	@ { cat src/words/effect.clj src/words/dic/serbian.clj src/words/dic/french.clj src/words/app.clj test/words/main_test.clj; printf '\n(words.main-test/test)\n'; } | ly2k --target eval
+
+.PHONY: check-sampling
+check-sampling: build
+	@ mkdir -p .build/check-sampling
+	@ ly2k --target java < checks/sampling.clj > .build/check-sampling/sampling_check.java
+	@ javac -d .build/check-sampling .build/bin/app/src/main/java/y2k/language/language_runtime.java .build/bin/app/src/main/java/words/sampling.java .build/check-sampling/sampling_check.java
+	@ java -cp .build/check-sampling 'words.sampling_check$$Runner'
+	@ printf '%s\n' 'PASS: sampling boundaries, no replacement, validation, immutable input'
 
 .PHONY: check-ui
 check-ui: build

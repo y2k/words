@@ -1,24 +1,21 @@
 (ns words.main
   (:require [words.app :as app])
   (:require [words.view :as view])
+  (:require [words.sampling :as sampling])
   (:import [android.app Activity]
            [android.os Bundle]
            [android.view View]
            [android.widget LinearLayout ScrollView]
-           [java.util ArrayList Collection Collections]))
+           [java.util Random]))
 
 (gen-class
  :name MainActivity
  :extends Activity
  :methods [[^override onCreate [Bundle] void]])
 
-(defn- shuffle-list! [items]
-  (let [copy (ArrayList. (cast Collection items))]
-    (Collections/shuffle copy)
-    copy))
-
 (defn -onCreate [^MainActivity self savedInstanceState]
-  (let [scroll (ScrollView. self)
+  (let [random (Random.)
+        scroll (ScrollView. self)
         root (LinearLayout. self)
         padding (cast int (view/dp self 16))]
     (.setOrientation root 1)
@@ -28,7 +25,9 @@
     (.setContentView self scroll)
     ((app/main)
      {:context self
-      :shuffle-list (fn [_w items] (shuffle-list! items))
+      :sample (fn [_w [items amount weight-fn]]
+                (sampling/sample! items amount weight-fn
+                                  (fn [total] (.nextInt random (cast int total)))))
       :clear-ui (fn [_w _arg] (.removeAllViews root) nil)
       :update-ui (fn [w node]
                    (let [f (view/create node)]
