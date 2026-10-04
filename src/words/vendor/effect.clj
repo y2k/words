@@ -1,4 +1,4 @@
-(ns words.effect)
+(ns words.vendor.effect)
 
 (defn dispatch [fx arg]
   (fn [w] (let [f (get w fx)] (f w arg))))

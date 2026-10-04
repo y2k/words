@@ -1,4 +1,5 @@
 (ns words.sampling
+  (:require [words.vendor.random :as random])
   (:import [java.util ArrayList]))
 
 (defn- prepare [items weight-fn]
@@ -37,12 +38,12 @@
     entries)
    2))
 
-(defn sample! [items amount weight-fn random-below]
+(defn sample! [items amount weight-fn seed]
   (cond
     (not (and (instance? Integer amount) (>= amount 0)))
     {:error :invalid-amount}
     (= amount 0)
-    {:items []}
+    {:items [] :seed seed}
     :else
     (let [prepared (prepare items weight-fn)]
       (cond
@@ -50,15 +51,17 @@
         (> amount (get prepared :positive)) {:error :insufficient-items}
         :else
         (let [entries (cast ArrayList (get prepared :entries))
-              result (ArrayList.)]
-          ;; ponytail: O(n*k); для больших выборок заменить линейный поиск деревом сумм.
-          (reduce
-           (fn [total _item]
-             (let [index (pick-index entries (random-below total))
-                   [item weight] (get entries index)]
-               (.add result item)
-               (.set entries (cast int index) [item 0])
-               (- total weight)))
-           (get prepared :total)
-           (drop (- (count items) amount) items))
-          {:items result})))))
+              result (ArrayList.)
+              ;; ponytail: O(n*k); для больших выборок заменить линейный поиск деревом сумм.
+              final-state
+              (reduce
+               (fn [[total current-seed] _item]
+                 (let [draw (random/next-int current-seed total)
+                       index (pick-index entries (get draw :value))
+                       [item weight] (get entries index)]
+                   (.add result item)
+                   (.set entries (cast int index) [item 0])
+                   [(- total weight) (get draw :seed)]))
+               [(get prepared :total) seed]
+               (drop (- (count items) amount) items))]
+          {:items result :seed (get final-state 1)})))))

@@ -37,9 +37,11 @@
                            ((onclick) w)))
     btn))
 
-(defn- create-text [{:context ^Context context} {:text ^String title}]
+(defn- create-text [{:context ^Context context} {:text ^String title :color color}]
   (let [text (TextView. context)]
     (.setText text title)
+    (if color
+      (.setTextColor text (android.graphics.Color/parseColor (cast String color))))
     (.setTextSize text 28)
     (.setPadding text 0 0 0 (cast int (dp context 8)))
     text))

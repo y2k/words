@@ -5,3 +5,7 @@
 /opencode.local.json
 /docs/superpowers/
 /compiler
+*.jks
+*.keystore
+*.p12
+*.pfx

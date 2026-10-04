@@ -1,5 +1,5 @@
-;; Run make check-ui after make run on an emulator.
-(ns checks.disabled_history
+;; Run make test-ui after make run on an emulator.
+(ns test_ui.disabled-history-test
   (:import [java.util List]
            [java.util.regex Pattern]
            [java.io StringReader]

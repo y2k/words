@@ -1,7 +1,6 @@
 (ns words.main
   (:require [words.app :as app])
   (:require [words.view :as view])
-  (:require [words.sampling :as sampling])
   (:import [android.app Activity]
            [android.os Bundle]
            [android.view View]
@@ -19,15 +18,15 @@
         root (LinearLayout. self)
         padding (cast int (view/dp self 16))]
     (.setOrientation root 1)
+    (.setGravity root 80) ; Gravity.BOTTOM
     (.setPadding root padding padding padding padding)
+    (.setFillViewport scroll true)
     (.setFitsSystemWindows scroll true)
     (.addView scroll root)
     (.setContentView self scroll)
     ((app/main)
      {:context self
-      :sample (fn [_w [items amount weight-fn]]
-                (sampling/sample! items amount weight-fn
-                                  (fn [total] (.nextInt random (cast int total)))))
+      :random-seed (fn [_w _arg] (.nextInt random))
       :clear-ui (fn [_w _arg] (.removeAllViews root) nil)
       :update-ui (fn [w node]
                    (let [f (view/create node)]

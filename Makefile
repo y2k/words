@@ -18,22 +18,24 @@ build:
 
 .PHONY: test
 test:
-	@ { cat src/words/effect.clj src/words/dic/serbian.clj src/words/dic/french.clj src/words/app.clj test/words/main_test.clj; printf '\n(words.main-test/test)\n'; } | ly2k --target eval
+	@ rm -rf .build/bin/test .build/test
+	@ $(MAKE) build
+	@ mkdir -p .build/test
+	@ find .build/bin/test/src/main/java -name '*_test.java' | sort > .build/test/sources.list
+	@ test -s .build/test/sources.list
+	@ javac -d .build/test -sourcepath .build/bin/app/src/main/java:.build/bin/test/src/main/java @.build/test/sources.list
+	@ set -e; while IFS= read -r source; do \
+		class=$$(printf '%s' "$${source#.build/bin/test/src/main/java/}" | sed 's|/|.|g; s|\.java$$||'); \
+		java -cp .build/test "$$class"'$$Runner'; \
+		printf 'PASS: %s\n' "$$class"; \
+	done < .build/test/sources.list
 
-.PHONY: check-sampling
-check-sampling: build
-	@ mkdir -p .build/check-sampling
-	@ ly2k --target java < checks/sampling.clj > .build/check-sampling/sampling_check.java
-	@ javac -d .build/check-sampling .build/bin/app/src/main/java/y2k/language/language_runtime.java .build/bin/app/src/main/java/words/sampling.java .build/check-sampling/sampling_check.java
-	@ java -cp .build/check-sampling 'words.sampling_check$$Runner'
-	@ printf '%s\n' 'PASS: sampling boundaries, no replacement, validation, immutable input'
-
-.PHONY: check-ui
-check-ui: build
-	@ mkdir -p .build/check-ui
-	@ ly2k --target java < checks/disabled_history.clj > .build/check-ui/disabled_history.java
-	@ javac -d .build/check-ui .build/bin/app/src/main/java/y2k/language/language_runtime.java .build/check-ui/disabled_history.java
-	@ java -cp .build/check-ui 'checks.disabled_history$$Runner'
+.PHONY: test-ui
+test-ui: build
+	@ mkdir -p .build/test-ui
+	@ ly2k --target java < test-ui/disabled_history_test.clj > .build/test-ui/disabled_history_test.java
+	@ javac -d .build/test-ui .build/bin/app/src/main/java/y2k/language/language_runtime.java .build/test-ui/disabled_history_test.java
+	@ java -cp .build/test-ui 'test_ui.disabled_history_test$$Runner'
 	@ printf '%s\n' 'PASS: old answers disabled, old taps ignored, new question active'
 
 .PHONY: run
