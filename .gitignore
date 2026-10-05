@@ -3,6 +3,7 @@
 /.vscode/
 /.worktrees/
 /opencode.local.json
+/opencode.jsonc
 /docs/superpowers/
 /compiler
 *.jks
