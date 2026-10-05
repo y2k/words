@@ -3,6 +3,14 @@
 ;; ponytail: Cyrillic pronunciation is approximate; use IPA or audio for precise French sounds.
 (defn words []
   [
+   ["lundi" "понедельник" "лэнди'" 4]
+   ["mardi" "вторник" "марди'" 4]
+   ["mercredi" "среда" "мэркрэди'" 4]
+   ["jeudi" "четверг" "жёди'" 4]
+   ["vendredi" "пятница" "вандрэди'" 4]
+   ["samedi" "суббота" "самди'" 4]
+   ["dimanche" "воскресенье" "дима'нш" 4]
+
    ["trouver" "находить" "трувэ'" 4]
    ["croire" "верить / полагать" "круар" 4]
    ["se cacher" "прятаться" "сё кашэ'" 4]
