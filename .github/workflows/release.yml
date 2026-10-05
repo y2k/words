@@ -11,7 +11,7 @@ jobs:
   apk:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Build APK
         run: docker build --platform linux/amd64 --output type=local,dest=.build/apk .
       - name: Upload APK
