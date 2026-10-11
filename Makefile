@@ -50,9 +50,22 @@ build_apk: build $(ANDROID_DEPENDENCIES)
 		-v "$$PWD/.build/cache:/root/.gradle" \
 		-v "$$PWD/.build/bin:/target" \
 		-v "$$PWD/.build/apk:/output_apk" \
-		y2khub/cljdroid build
+		y2khub/cljdroid@sha256:acbfaa63023f30b48763a8aaaf3a08c60a8bc24bf396667b7ff17ef6ff2da0a4 build
+
+.PHONY: build_release
+build_release:
+	@ docker build --target unsigned --output type=local,dest=.build/release .
+
+.PHONY: release
+release:
+	@ docker build --target release \
+		--secret id=KEYSTORE_GPG_PASSPHRASE,env=KEYSTORE_GPG_PASSPHRASE \
+		--secret id=KEYSTORE_PASSWORD,env=KEYSTORE_PASSWORD \
+		--secret id=KEY_PASSWORD,env=KEY_PASSWORD \
+		--output type=local,dest=.build/release .
 
 .PHONY: clean
 clean:
 	@ rm -rf .build/bin
 	@ rm -rf .build/apk
+	@ rm -rf .build/release

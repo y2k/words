@@ -16,9 +16,25 @@ COPY test/ test/
 COPY resources/ resources/
 RUN make build .build/bin/app/dependencies.gradle
 
-FROM y2khub/cljdroid@sha256:1fcd736388828a576cbee3f750b20b886bff21b5990c7005ba30ca77fad88112 AS apk
+FROM y2khub/cljdroid@sha256:acbfaa63023f30b48763a8aaaf3a08c60a8bc24bf396667b7ff17ef6ff2da0a4 AS apk
 COPY --from=source /src/.build/bin/ /target/
-RUN mkdir -p /output_apk && /bin/bash /app/build.sh build
+RUN mkdir -p /output_apk && /bin/bash /app/build.sh build-release
 
-FROM scratch
-COPY --from=apk /output_apk/app-debug.apk /app-debug.apk
+FROM scratch AS unsigned
+COPY --from=apk /output_apk/app-release-unsigned.apk /app-release-unsigned.apk
+COPY --from=apk /output_apk/mapping.txt /mapping.txt
+
+FROM apk AS signed
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends gpg \
+    && rm -rf /var/lib/apt/lists/*
+COPY signing/sign.sh signing/release.jks.gpg /signing/
+RUN --mount=type=secret,id=KEYSTORE_GPG_PASSPHRASE,required=true \
+    --mount=type=secret,id=KEYSTORE_PASSWORD,required=true \
+    --mount=type=secret,id=KEY_PASSWORD,required=true \
+    --mount=type=tmpfs,target=/tmp \
+    sh /signing/sign.sh
+
+FROM scratch AS release
+COPY --from=signed /output_apk/app-release.apk /app-release.apk
+COPY --from=signed /output_apk/mapping.txt /mapping.txt

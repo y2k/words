@@ -1,0 +1,12 @@
+**
+!Makefile
+!build.clj
+!src/
+!src/**
+!test/
+!test/**
+!resources/
+!resources/**
+!signing/
+!signing/sign.sh
+!signing/release.jks.gpg
